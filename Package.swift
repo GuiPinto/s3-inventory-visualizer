@@ -9,6 +9,7 @@ let package = Package(
     ],
     targets: [
         .target(name: "InventoryIndex"),
+        .testTarget(name: "InventoryIndexTests", dependencies: ["InventoryIndex"]),
     ],
     swiftLanguageModes: [.v5]
 )
