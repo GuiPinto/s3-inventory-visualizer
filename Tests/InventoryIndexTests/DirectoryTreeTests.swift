@@ -174,6 +174,19 @@ final class DirectoryTreeTests: XCTestCase {
         XCTAssertEqual(tree.averageAgeDays(1), Double(10 * 365 + 20 * 731) / 35, accuracy: 0.001)
     }
 
+    func testChildOfAncestorContainingDescendant() throws {
+        let reader = try IndexReader(folder: folder)
+        let tree = reader.directories
+        // The fixture is root 0, with children 1 ("a") and 3 ("c"), and 2 ("b") under 1.
+        XCTAssertEqual(tree.child(of: 0, containing: 2), 1)
+        XCTAssertEqual(tree.child(of: 0, containing: 1), 1)
+        XCTAssertEqual(tree.child(of: 0, containing: 3), 3)
+        XCTAssertEqual(tree.child(of: 1, containing: 2), 2)
+        XCTAssertNil(tree.child(of: 0, containing: 0))
+        XCTAssertNil(tree.child(of: 1, containing: 3))
+        XCTAssertNil(tree.child(of: 2, containing: 1))
+    }
+
     func testFileLookups() throws {
         let reader = try IndexReader(folder: folder)
         XCTAssertEqual(reader.key(ofFile: 0), "a/b/z")
