@@ -1,0 +1,9 @@
+.build/
+.swiftpm/
+DerivedData/
+App/*.xcodeproj
+App/build/
+*.xcuserstate
+.DS_Store
+.s3-inventory-index/
+private/
