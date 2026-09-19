@@ -12,7 +12,7 @@ let package = Package(
         .target(name: "InventoryIndex"),
         .target(name: "InventoryImport", dependencies: ["InventoryIndex"]),
         .target(name: "TestSupport", dependencies: ["InventoryIndex", "InventoryImport"], path: "Tests/TestSupport"),
-        .testTarget(name: "InventoryIndexTests", dependencies: ["InventoryIndex"]),
+        .testTarget(name: "InventoryIndexTests", dependencies: ["InventoryIndex", "InventoryImport", "TestSupport"]),
         .testTarget(name: "InventoryImportTests", dependencies: ["InventoryImport", "TestSupport"]),
     ],
     swiftLanguageModes: [.v5]
