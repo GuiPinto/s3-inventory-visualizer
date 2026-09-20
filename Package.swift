@@ -16,7 +16,7 @@ let package = Package(
         .target(name: "TestSupport", dependencies: ["InventoryIndex", "InventoryImport"], path: "Tests/TestSupport"),
         .testTarget(name: "InventoryIndexTests", dependencies: ["InventoryIndex", "InventoryImport", "TestSupport"]),
         .testTarget(name: "InventoryImportTests", dependencies: ["InventoryImport", "TestSupport"]),
-        .testTarget(name: "TreemapLayoutTests", dependencies: ["TreemapLayout"]),
+        .testTarget(name: "TreemapLayoutTests", dependencies: ["TreemapLayout", "TestSupport"]),
     ],
     swiftLanguageModes: [.v5]
 )
