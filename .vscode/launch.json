@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:s3-inventory-visualizer}",
+            "name": "Debug s3-inventory-tool",
+            "target": "s3-inventory-tool",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug s3-inventory-tool"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:s3-inventory-visualizer}",
+            "name": "Release s3-inventory-tool",
+            "target": "s3-inventory-tool",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release s3-inventory-tool"
+        }
+    ]
+}
