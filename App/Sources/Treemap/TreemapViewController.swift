@@ -123,7 +123,7 @@ final class TreemapViewController: NSViewController {
         metalView.onViewportChange = { [weak self] size in self?.viewportChanged(size) }
         metalView.onHover = { [weak self] hit, _ in self?.updateStatus(for: hit) }
         metalView.onClick = { [weak self] hit, _ in self?.handleClick(hit) }
-        metalView.onDoubleClick = { [weak self] hit, rect in self?.handleDoubleClick(hit, rect) }
+        metalView.onDoubleClick = { [weak self] hit in self?.handleDoubleClick(hit) }
         breadcrumb.onSelect = { [weak self] directory in self?.setRoot(directory, animated: false) }
         breadcrumb.onBack = { [weak self] in self?.goBack() }
         breadcrumb.onForward = { [weak self] in self?.goForward() }
@@ -399,15 +399,35 @@ final class TreemapViewController: NSViewController {
         }
     }
 
-    private func handleDoubleClick(_ hit: LayoutHit?, _ sourceRect: CGRect?) {
+    /// Opens the block the cursor is in, one level below the current view. A cell drawn for a folder
+    /// deeper down still opens its top block, so the breadcrumb grows one step per double click.
+    /// A file cell keeps the single click behaviour, because a file has nothing to open.
+    private func handleDoubleClick(_ hit: LayoutHit?) {
         guard let hit else { return }
+        var folder: UInt32?
 
-        if case .directory(let identifier, _) = hit, identifier != root {
-            pendingZoomRect = sourceRect
-            setRoot(identifier, animated: sourceRect != nil)
-        } else {
-            handleClick(hit)
+        switch hit {
+        case .directory(let identifier, _):
+            folder = identifier
+        case .remainder(let directory, _, _, _):
+            folder = directory
+        case .file:
+            folder = nil
         }
+
+        guard let folder, let block = reader.directories.child(of: root, containing: folder) else {
+            handleClick(hit)
+            return
+        }
+
+        pendingZoomRect = zoomSourceRect(of: block)
+        setRoot(block, animated: pendingZoomRect != nil)
+    }
+
+    /// The on screen rectangle a zoom should grow out of, in layout pixels.
+    private func zoomSourceRect(of directory: UInt32) -> CGRect? {
+        guard let rect = metalView.result?.selectionRect(directory: directory, file: nil) else { return nil }
+        return CGRect(x: rect.x, y: rect.y, width: rect.width, height: rect.height)
     }
 
     func select(directory: UInt32, file: UInt64?) {

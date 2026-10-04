@@ -82,6 +82,25 @@ public struct DirectoryTree {
         id..<(id + 1 + subtreeDirectoryCount(id))
     }
 
+    /// The child of `ancestor` whose subtree holds `id`, or nil when `id` sits outside that subtree
+    /// or is `ancestor` itself. One step per level, so it costs the depth difference and no more.
+    public func child(of ancestor: UInt32, containing id: UInt32) -> UInt32? {
+        guard id != ancestor, subtreeRange(ancestor).contains(id) else { return nil }
+        var current = id
+
+        while true {
+            let above = parent(current)
+
+            guard above != IndexFormat.noParent else { return nil }
+
+            if above == ancestor {
+                return current
+            }
+
+            current = above
+        }
+    }
+
     public func subtreeFileRange(_ id: UInt32) -> Range<UInt64> {
         let start = fileStart(id)
         return start..<(start + subtreeFileCount(id))
