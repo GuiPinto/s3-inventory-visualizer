@@ -4,7 +4,7 @@ import TreemapLayout
 final class TreemapMetalView: MTKView {
     var onHover: ((LayoutHit?, CGPoint) -> Void)?
     var onClick: ((LayoutHit?, NSEvent) -> Void)?
-    var onDoubleClick: ((LayoutHit?, CGRect?) -> Void)?
+    var onDoubleClick: ((LayoutHit?) -> Void)?
     var onViewportChange: ((CGSize) -> Void)?
 
     private(set) var renderer: TreemapRenderer?
@@ -124,14 +124,7 @@ final class TreemapMetalView: MTKView {
         let hit = result?.hitTest(x: point.x, y: point.y)
 
         if event.clickCount >= 2 {
-            var sourceRect: CGRect?
-
-            if case .directory(let identifier, _)? = hit,
-               let nodeIndex = result?.node(forDirectory: identifier), let node = result?.nodes[nodeIndex] {
-                sourceRect = CGRect(x: node.rect.x, y: node.rect.y, width: node.rect.width, height: node.rect.height)
-            }
-
-            onDoubleClick?(hit, sourceRect)
+            onDoubleClick?(hit)
         } else {
             onClick?(hit, event)
         }
